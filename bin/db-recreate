@@ -1,0 +1,72 @@
+#!/bin/bash
+
+set -e
+
+mkdir -p build/etc
+cp -u -p etc/env.conf build/etc/env.conf
+source build/etc/env.conf
+
+psql postgres://$DB_ADMIN:$DB_ADMIN_PASSWORD@$DB_HOST:$DB_PORT/postgres -q <<EOF
+drop database if exists $DB_NAME;
+
+drop role if exists anonymous;
+drop role if exists authenticator;
+drop role if exists scoring;
+drop role if exists scoring_user;
+
+drop role if exists admin;
+drop role if exists attract;
+drop role if exists declare;
+drop role if exists verify;
+drop role if exists pledgerate;
+drop role if exists lawyer;
+drop role if exists security;
+drop role if exists risk;
+drop role if exists retailcom;
+drop role if exists creditcom;
+drop role if exists middle;
+drop role if exists signing;
+drop role if exists pledgereg;
+drop role if exists creditadmin;
+drop role if exists blacklist;
+drop role if exists terrolist;
+drop role if exists pkb;
+
+create role anonymous;
+create role authenticator with login password 'authenticator123' noinherit in role anonymous;
+create role scoring       with login password 'scoring123'       noinherit;
+create role scoring_user;
+
+comment on role anonymous     is 'No authentication is provided';
+comment on role authenticator is 'Intermediate to become anonymous or an user';
+comment on role board         is 'Schema owner';
+comment on role scoring_user  is 'Unprivileged user';
+
+create role admin       with role authenticator;
+create role attract     with role authenticator in role scoring_user;
+create role declare     with role authenticator in role scoring_user;
+create role verify      with role authenticator in role scoring_user;
+create role pledgerate  with role authenticator in role scoring_user;
+create role lawyer      with role authenticator in role scoring_user;
+create role security    with role authenticator in role scoring_user;
+create role risk        with role authenticator in role scoring_user;
+create role retailcom   with role authenticator in role scoring_user;
+create role creditcom   with role authenticator in role scoring_user;
+create role middle      with role authenticator in role scoring_user;
+create role signing     with role authenticator in role scoring_user;
+create role pledgereg   with role authenticator in role scoring_user;
+create role creditadmin with role authenticator in role scoring_user;
+create role blacklist   with role authenticator in role scoring_user;
+create role terrolist   with role authenticator in role scoring_user;
+create role pkb         with role authenticator in role scoring_user;
+
+create database $DB_NAME owner scoring;
+EOF
+
+psql postgres://$DB_ADMIN:$DB_ADMIN_PASSWORD@$DB_HOST:$DB_PORT/$DB_NAME -q <<EOF
+create extension "uuid-ossp";
+create extension "pgcrypto";
+create extension "pgjwt";
+create extension "pgtap";
+alter database $DB_NAME set scoring.jwt_secret to '$JWT_SECRET'
+EOF

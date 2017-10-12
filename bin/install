@@ -1,0 +1,24 @@
+#!/bin/bash
+
+function assemble_and_install {
+  out=build/db/$1.sql
+  rm -f $out
+
+  for file in `xargs -a db/$1/assemble`; do
+    cat db/$1/$file.sql >> $out
+    echo $'\n\n' >> $out
+  done
+
+  psql $DB_URI -q1 --file build/db/$1.sql
+}
+
+mkdir -p build/etc
+cp -u -p etc/env.conf build/etc/env.conf
+source build/etc/env.conf
+
+DB_URI=postgres://scoring:scoring123@$DB_HOST:$DB_PORT/$DB_NAME
+
+mkdir -p build/db/ && \
+  assemble_and_install dev && \
+  assemble_and_install qa && \
+  psql $DB_URI -qc "alter database scoring set search_path to qa, dev, public;"

@@ -1,0 +1,23 @@
+#!/bin/bash
+
+if [[ $# -eq 0 ]]; then
+  release_name=`date +%g%V`-`git rev-parse --abbrev-ref HEAD`
+else
+  release_name=`date +%g%V`-$1
+fi
+
+out=db/prod/function.sql
+rm -f $out
+echo '--liquibase formatted sql'$'\n' >> $out
+for f in db/dev/macro/* db/dev/function/*
+do
+  echo '--changeset auto:'$(basename $f .sql)' splitStatements:false runOnChange:true'$'\n' >> $out
+  cat $f >> $out
+  echo $'\n' >> $out
+done
+
+touch db/prod/$release_name.sql
+
+echo "    Check"
+echo db/prod/function.sql
+echo db/prod/$release_name.sql

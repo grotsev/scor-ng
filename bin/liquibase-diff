@@ -1,0 +1,28 @@
+#!/bin/bash
+
+mkdir -p build/etc
+cp -u -p etc/env.conf build/etc/env.conf
+source build/etc/env.conf
+envsubst < etc/liquibase.properties > build/etc/liquibase.properties
+
+DB_URI=postgres://scoring:scoring123@$DB_HOST:$DB_PORT/$DB_NAME
+
+bin/install && \
+
+psql $DB_URI -q1 <<EOF
+drop schema if exists prod cascade;
+EOF && \
+
+liquibase \
+    --url=jdbc:postgresql://$DB_HOST:$DB_PORT/$DB_NAME \
+    --username=scoring \
+    --password=scoring123 \
+    --changeLogFile=db/prod/changelog.xml \
+    update && \
+
+liquibase \
+    --defaultsFile="etc/liquibase.properties" \
+    diff \
+    --schemas=live \
+    --referenceSchemas: dev \
+  | grep -v ': NONE'

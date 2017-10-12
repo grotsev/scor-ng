@@ -1,0 +1,8 @@
+#!/bin/bash
+
+mkdir -p build/etc
+cp -u -p etc/env.conf build/etc/env.conf
+source build/etc/env.conf
+envsubst < etc/postgrest-ws.conf > build/etc/postgrest-ws.conf
+
+postgrest-ws build/etc/postgrest-ws.conf

@@ -1,0 +1,11 @@
+#!/bin/bash
+
+mkdir -p build/etc
+cp -u -p etc/env.conf build/etc/env.conf
+source build/etc/env.conf
+
+curl http://localhost:$REST_PORT/rpc/$1 -X POST \
+     -H "Content-Type: application/json" \
+     -d $2
+
+echo

@@ -1,0 +1,29 @@
+#!/bin/bash
+
+mkdir -p build/etc
+cp -u -p etc/env.conf build/etc/env.conf
+source build/etc/env.conf
+DB_URI=postgres://authenticator:authenticator123@$DB_HOST:$DB_PORT/$DB_NAME
+
+if [[ "$2" == "prod" ]]; then
+  SCHEMA=prod
+else
+  SCHEMA=dev
+fi
+
+bin/install
+if [[ -z $1 ]]; then
+  echo "TAP version 13" && \
+  psql $DB_URI --tuples-only -q <<EOF
+set search_path to qa, $SCHEMA, public;
+select runtests();
+EOF
+else
+  psql $DB_URI --tuples-only -q <<EOF
+set client_min_messages to info;
+set search_path to qa, $SCHEMA, public;
+select no_plan();
+select qa.test_$1();
+select * from finish();
+EOF
+fi

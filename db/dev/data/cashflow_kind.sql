@@ -1,0 +1,20 @@
+insert into cashflow_kind
+  (cashflow_kind           , period, k1   , i18n_rus                                                            )
+values
+  ('salary_last_month'     ,      1, false, 'оклад за последний месяц'                                          )
+, ('salary_avg'            ,      1, false, 'средняя сумма ежемесячных доходов / Средняя сумма по справке о з/п')
+, ('salary_spouse'         ,      1, false, 'ежемесячный доход супруга/ги'                                      )
+, ('other_confirmed_income',      1, false, 'дополнительный подтверждённый доход'                               )
+, ('credit_pay'            ,     -1, false, 'ЕП по действующим кредитам'                                        )
+, ('credit_card_limit'     ,     -1, false, 'сумма КЛ на кредитных картах'                                      )
+, ('education'             ,     -1, false, 'расходы на образование (детский сад, школа, институт)'             )
+, ('tenancy'               ,     -1, false, 'аренда жилья'                                                      )
+, ('utilities'             ,     -1, false, 'расходы на коммунальные услуги'                                    )
+, ('communications'        ,     -1, false, 'расходы на услуги мобильной связи. Интернет и т.п.'                )
+, ('personal'              ,     -1, false, 'личные платежи'                                                    )
+, ('alimony'               ,     -1, false, 'алименты'                                                          )
+, ('other_expenses'        ,     -1, false, 'прочие расходы(лечение, помощь родственникам)'                     )
+, ('insurance'             ,     -1,  true, 'страхование'                                                       )
+, ('commission'            ,     -1, false, 'комиссии'                                                          )
+, ('transport_tax'         ,    -12, false, 'годовой налог на транспорт'                                        )
+;

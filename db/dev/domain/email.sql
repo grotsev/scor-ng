@@ -1,0 +1,4 @@
+create domain email as text
+  check (char_length(value) <= 100)
+  check (value ~ '^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9.-]+$')
+;

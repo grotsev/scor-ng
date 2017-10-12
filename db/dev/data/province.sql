@@ -1,0 +1,21 @@
+insert into province
+  (country, province                 , i18n_rus                        )
+values
+  ('kaz'  , 'akmola_region'          , 'Акмолинская область'           )
+, ('kaz'  , 'aktobe_region'          , 'Актюбинская область'           )
+, ('kaz'  , 'almaty'                 , 'Алматы'                        )
+, ('kaz'  , 'almaty_region'          , 'Алматинская область'           )
+, ('kaz'  , 'astana'                 , 'Астана'                        )
+, ('kaz'  , 'atyray_region'          , 'Атырауская область'            )
+, ('kaz'  , 'baikonur'               , 'Байконыр'                      )
+, ('kaz'  , 'east_kazakhstan_region' , 'Восточно-Казахстанская область')
+, ('kaz'  , 'jambyl_region'          , 'Жамбылская область'            )
+, ('kaz'  , 'karaganda_region'       , 'Карагандинская область'        )
+, ('kaz'  , 'kostanay_region'        , 'Костанайская область'          )
+, ('kaz'  , 'kyzylorda_region'       , 'Кызылординская область'        )
+, ('kaz'  , 'mangystau_region'       , 'Мангистауская область'         )
+, ('kaz'  , 'north_kazakhstan_region', 'Северо-Казахстанская область'  )
+, ('kaz'  , 'pavlodar_region'        , 'Павлодарская область'          )
+, ('kaz'  , 'south_kazakhstan_region', 'Южно-Казахстанская область'    )
+, ('kaz'  , 'west_kazakhstan_region' , 'Западно-Казахстанская область' )
+;
