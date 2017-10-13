@@ -13,19 +13,15 @@ import Page.Home
 -- MODEL --
 
 
-type PageObject
-    = PageHome (Page Page.Home.State Page.Home.Msg)
+type alias State =
+    { navbarState : Navbar.State
+    , maybeRoute : Maybe Route
+    , page : Page
 
-
-type PageMsg
-    = PageHomeMsg (Page a)
-
-
-update msg state =
-  case (msg, state) of
-    (PageHomeMsg, PageHome ) ->
-
-    _ ->
+    --, authState : Page.Auth.State
+    --, seance : Maybe Uuid
+    , seanceChannel : Maybe String
+    }
 
 
 
@@ -33,13 +29,13 @@ update msg state =
 -- SUBSCRIPTIONS --
 -- UPDATE --
 -- MAIN --
-{-
-   main : Program Value Model Msg
-   main =
-       Navigation.programWithFlags (SetRoute << Route.fromLocation)
-           { init = init
-           , view = view
-           , update = update
-           , subscriptions = subscriptions
-           }
--}
+
+
+main : Program Value State Msg
+main =
+    Navigation.programWithFlags (SetRoute << Route.fromLocation)
+        { init = init
+        , view = view
+        , update = update
+        , subscriptions = subscriptions
+        }

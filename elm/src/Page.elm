@@ -3,8 +3,10 @@ module Page exposing (Msg, State, update, view)
 import Data.Page exposing (SeanceMsg, Session)
 import Html exposing (Html)
 import Page.Home
-import Page.Other
+import Page.ThingItem
+import Page.ThingRoll
 import Rocket exposing ((=>))
+import Util
 
 
 {-
@@ -21,11 +23,12 @@ import Rocket exposing ((=>))
 
 type State
     = HomeState Page.Home.State
-    | OtherState Page.Other.State
+    | ThingRollState Page.ThingRoll.State
+    | ThingItemState Page.ThingItem.State
 
 
 
---init : Session -> ( State, Cmd Msg )
+--init : Session -> Route -> ( State, Cmd Msg )
 -- VIEW --
 
 
@@ -39,8 +42,11 @@ view session state =
         HomeState subState ->
             do HomeMsg subState Page.Home.view
 
-        OtherState subState ->
-            do OtherMsg subState Page.Other.view
+        ThingRollState subState ->
+            do ThingRollMsg subState Page.ThingRoll.view
+
+        ThingItemState subState ->
+            do ThingItemMsg subState Page.ThingItem.view
 
 
 
@@ -57,8 +63,11 @@ subscriptions session state =
         HomeState subState ->
             do HomeMsg subState Page.Home.subscriptions
 
-        OtherState subState ->
-            do OtherMsg subState Page.Other.subscriptions
+        ThingRollState subState ->
+            do ThingRollMsg subState Page.ThingRoll.subscriptions
+
+        ThingItemState subState ->
+            do ThingItemMsg subState Page.ThingItem.subscriptions
 
 
 
@@ -67,7 +76,8 @@ subscriptions session state =
 
 type Msg
     = HomeMsg Page.Home.Msg
-    | OtherMsg Page.Other.Msg
+    | ThingRollMsg Page.ThingRoll.Msg
+    | ThingItemMsg Page.ThingItem.Msg
 
 
 seanceMsg : SeanceMsg -> State -> Maybe Msg
@@ -80,26 +90,24 @@ seanceMsg msg state =
         HomeState _ ->
             do HomeMsg Page.Home.seanceMsg
 
-        OtherState _ ->
-            do OtherMsg Page.Other.seanceMsg
+        ThingRollState _ ->
+            do ThingRollMsg Page.ThingRoll.seanceMsg
+
+        ThingItemState _ ->
+            do ThingItemMsg Page.ThingItem.seanceMsg
 
 
 update : Msg -> Session -> State -> ( State, Cmd Msg )
 update msg session state =
-    let
-        do fMsg subMsg fState subState pageUpdate =
-            let
-                ( subStateNew, subCmd ) =
-                    pageUpdate subMsg session subState
-            in
-            fState subStateNew => Cmd.map fMsg subCmd
-    in
     case ( msg, state ) of
         ( HomeMsg subMsg, HomeState subState ) ->
-            do HomeMsg subMsg HomeState subState Page.Home.update
+            Util.dispatch HomeMsg HomeState (Page.Home.update session subMsg subState)
 
-        ( OtherMsg subMsg, OtherState subState ) ->
-            do OtherMsg subMsg OtherState subState Page.Other.update
+        ( ThingRollMsg subMsg, ThingRollState subState ) ->
+            Util.dispatch ThingRollMsg ThingRollState (Page.ThingRoll.update session subMsg subState)
+
+        ( ThingItemMsg subMsg, ThingItemState subState ) ->
+            Util.dispatch ThingItemMsg ThingItemState (Page.ThingItem.update session subMsg subState)
 
         _ ->
             state => Cmd.none

@@ -1,4 +1,4 @@
-module Page.Home exposing (..)
+module Page.ThingItem exposing (..)
 
 import Data.Page exposing (SeanceMsg, Session)
 import Html exposing (Html)

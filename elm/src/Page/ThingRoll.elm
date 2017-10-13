@@ -1,4 +1,4 @@
-module Page.Other exposing (..)
+module Page.ThingRoll exposing (..)
 
 import Data.Page exposing (SeanceMsg, Session)
 import Html exposing (Html)
@@ -28,8 +28,8 @@ subscriptions session state =
     Sub.none
 
 
-update : Msg -> Session -> State -> ( State, Cmd Msg )
-update msg session state =
+update : Session -> Msg -> State -> ( State, Cmd Msg )
+update session msg state =
     state => Cmd.none
 
 
