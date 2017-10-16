@@ -3,7 +3,7 @@ module Main exposing (main)
 import Bootstrap.Button as Button
 import Bootstrap.Grid as Grid
 import Bootstrap.Navbar as Navbar
-import Data.Session exposing (Session)
+import Data.Session as Session exposing (Session)
 import Field
 import Html exposing (Html)
 import Html.Attributes as Attr
@@ -161,7 +161,7 @@ type Msg
     | LoginMsg String
     | PasswordMsg String
     | LoginRequest
-    | LoginResult (Postgrest.Result Session)
+    | LoginResult (Postgrest.Result ())
     | PageMsg Page.Msg
     | LogoutMsg
     | RouteMsg Route
@@ -206,13 +206,21 @@ update msg state =
 
         ( Channel c, LoginResult result ) ->
             case result of
+                Ok () ->
+                    state => Cmd.none
+
+                Err error ->
+                    { state | step = Channel { c | loading = False, response = Just (Err error) } } => Cmd.none
+
+        ( Channel c, ChannelMsg payload ) ->
+            case Decode.decodeString Session.decoder payload of
                 Ok session ->
                     Util.dispatch PageMsg
                         (\page -> { state | step = Session { channel = c.channel, session = session, page = page } })
                         (Page.init state.route session)
 
                 Err error ->
-                    { state | step = Channel { c | loading = False, response = Just (Err error) } } => Cmd.none
+                    { state | step = Channel { c | loading = False, response = Just (Err Postgrest.Decode) } } => Cmd.none
 
         ( Session s, RouteMsg route ) ->
             Util.dispatch PageMsg

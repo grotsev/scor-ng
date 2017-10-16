@@ -1,6 +1,5 @@
 module Rpc exposing (..)
 
-import Data.Session as Session exposing (Session)
 import Http
 import Json.Decode as Decode
 import Json.Encode as Encode
@@ -32,7 +31,7 @@ login :
         , login : String
         , password : String
     }
-    -> Http.Request Session
+    -> Http.Request ()
 login =
     Postgrest.rpc
         { url = "http://localhost:3001/rpc/login"
@@ -43,6 +42,6 @@ login =
                     , ( "login", Encode.string login )
                     , ( "password", Encode.string password )
                     ]
-        , decoder = Session.decoder
+        , decoder = Decode.succeed ()
         }
         Nothing
