@@ -19,6 +19,7 @@ import Rpc
 import Util
 import Uuid exposing (Uuid)
 import Validate
+import WebSocket
 
 
 {-| Main gathers Data.Session and passes it to Page
@@ -82,7 +83,7 @@ view state =
         Seance seance ->
             Html.text "Channel requesting..."
 
-        Channel { channel, login, password, loading, response } ->
+        Channel { login, password, loading, response } ->
             let
                 loginField =
                     { id = "register-login"
@@ -107,7 +108,7 @@ view state =
                     ]
                 ]
 
-        Session { channel, session, page } ->
+        Session { session, page } ->
             Html.div []
                 [ Navbar.config NavbarMsg
                     |> Navbar.withAnimation
@@ -134,12 +135,19 @@ view state =
 
 
 -- SUBSCRIPTIONS --
---TODO
 
 
 subscriptions : State -> Sub Msg
 subscriptions state =
-    Sub.none
+    case state.step of
+        Channel { channel } ->
+            WebSocket.listen ("ws://localhost:3002/" ++ channel) ChannelMsg
+
+        Session { channel } ->
+            WebSocket.listen ("ws://localhost:3002/" ++ channel) ChannelMsg
+
+        _ ->
+            Sub.none
 
 
 
@@ -149,6 +157,7 @@ subscriptions state =
 type Msg
     = SeanceResult Uuid
     | ChannelResult (Postgrest.Result String)
+    | ChannelMsg String
     | LoginMsg String
     | PasswordMsg String
     | LoginRequest
