@@ -4,11 +4,11 @@ import Bootstrap.Button as Button
 import Bootstrap.Grid as Grid
 import Bootstrap.Navbar as Navbar
 import Data.Session as Session exposing (Session)
-import Field
 import Html exposing (Html)
 import Html.Attributes as Attr
 import I18n.Rus as I18n
 import Json.Decode as Decode exposing (Value)
+import Login
 import Navigation exposing (Location)
 import Page
 import Postgrest
@@ -18,7 +18,6 @@ import Route exposing (Route)
 import Rpc
 import Util
 import Uuid exposing (Uuid)
-import Validate
 import WebSocket
 
 
@@ -36,10 +35,7 @@ type Step
     | Channel
         { seance : Uuid
         , channel : String
-        , login : String
-        , password : String
-        , loading : Bool
-        , response : Postgrest.Response ()
+        , login : Login.State
         }
     | Session
         { seance : Uuid
@@ -88,30 +84,8 @@ view state =
         Seance seance ->
             Html.text "Channel requesting..."
 
-        Channel { login, password, loading, response } ->
-            let
-                loginField =
-                    { id = "register-login"
-                    , title = "Логин"
-                    , help = Just "Уникальный идентификатор пользователя"
-                    , validation = Validate.filled login
-                    , input = Field.text LoginMsg login
-                    }
-
-                passwordField =
-                    { id = "register-password"
-                    , title = "Пароль"
-                    , help = Nothing
-                    , validation = Validate.secure password
-                    , input = Field.password PasswordMsg password
-                    }
-            in
-            Grid.container [ Attr.class "mt-sm-5" ]
-                [ Field.form loading response LoginRequest "Войти" <|
-                    [ loginField
-                    , passwordField
-                    ]
-                ]
+        Channel { login } ->
+            Html.map LoginMsg (Login.view login)
 
         Session { session, page } ->
             Html.div []
@@ -162,10 +136,7 @@ subscriptions state =
 type Msg
     = SeanceResult Uuid
     | ChannelResult (Postgrest.Result String)
-    | LoginMsg String
-    | PasswordMsg String
-    | LoginRequest
-    | LoginResult (Postgrest.Result ())
+    | LoginMsg Login.Msg
     | ChannelMsg String
     | PageMsg Page.Msg
     | LogoutMsg
@@ -199,10 +170,7 @@ update msg state =
                                     Channel
                                         { seance = seance
                                         , channel = channel
-                                        , login = ""
-                                        , password = ""
-                                        , loading = False
-                                        , response = Nothing
+                                        , login = Login.init
                                         }
 
                                 Err error ->
@@ -213,48 +181,12 @@ update msg state =
                 _ ->
                     default
 
-        LoginMsg login ->
+        LoginMsg subMsg ->
             case state.step of
                 Channel c ->
-                    { state | step = Channel { c | login = login } } => Cmd.none
-
-                _ ->
-                    default
-
-        PasswordMsg password ->
-            case state.step of
-                Channel c ->
-                    { state | step = Channel { c | password = password } } => Cmd.none
-
-                _ ->
-                    default
-
-        LoginRequest ->
-            case state.step of
-                Channel c ->
-                    { state | step = Channel { c | loading = True } }
-                        => Postgrest.send LoginResult (Rpc.login c)
-
-                _ ->
-                    default
-
-        LoginResult result ->
-            case state.step of
-                Channel c ->
-                    case result of
-                        Ok () ->
-                            state => Cmd.none
-
-                        Err error ->
-                            { state
-                                | step =
-                                    Channel
-                                        { c
-                                            | loading = False
-                                            , response = Just (Err error)
-                                        }
-                            }
-                                => Cmd.none
+                    Util.dispatch LoginMsg
+                        (\login -> { state | step = Channel { c | login = login } })
+                        (Login.update c.seance subMsg c.login)
 
                 _ ->
                     default
@@ -280,12 +212,7 @@ update msg state =
 
                         Err error ->
                             { state
-                                | step =
-                                    Channel
-                                        { c
-                                            | loading = False
-                                            , response = Just (Err Postgrest.Decode)
-                                        }
+                                | step = Channel { c | login = Login.error c.login }
                             }
                                 => Cmd.none
 
@@ -310,10 +237,7 @@ update msg state =
                             Channel
                                 { seance = s.seance
                                 , channel = s.channel
-                                , login = ""
-                                , password = ""
-                                , loading = False
-                                , response = Nothing
+                                , login = Login.init
                                 }
                     }
                         => Cmd.none
