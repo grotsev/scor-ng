@@ -41,7 +41,12 @@ type Step
         , loading : Bool
         , response : Postgrest.Response ()
         }
-    | Session { channel : String, session : Session, page : Page.State }
+    | Session
+        { seance : Uuid
+        , channel : String
+        , session : Session
+        , page : Page.State
+        }
     | Error Postgrest.Error
 
 
@@ -157,11 +162,11 @@ subscriptions state =
 type Msg
     = SeanceResult Uuid
     | ChannelResult (Postgrest.Result String)
-    | ChannelMsg String
     | LoginMsg String
     | PasswordMsg String
     | LoginRequest
     | LoginResult (Postgrest.Result ())
+    | ChannelMsg String
     | PageMsg Page.Msg
     | LogoutMsg
     | RouteMsg Route
@@ -170,75 +175,167 @@ type Msg
 
 update : Msg -> State -> ( State, Cmd Msg )
 update msg state =
-    case ( state.step, msg ) of
-        ( Init, SeanceResult seance ) ->
-            { state | step = Seance seance }
-                => Postgrest.send ChannelResult (Rpc.seanceChannel { seance = seance })
+    let
+        default =
+            Basics.always state (Debug.log "Unhandled" ( msg, state.step )) => Cmd.none
+    in
+    case msg of
+        SeanceResult seance ->
+            case state.step of
+                Init ->
+                    { state | step = Seance seance }
+                        => Postgrest.send ChannelResult (Rpc.seanceChannel { seance = seance })
 
-        ( Seance seance, ChannelResult channelResult ) ->
-            { state
-                | step =
-                    case channelResult of
-                        Ok channel ->
+                _ ->
+                    default
+
+        ChannelResult channelResult ->
+            case state.step of
+                Seance seance ->
+                    { state
+                        | step =
+                            case channelResult of
+                                Ok channel ->
+                                    Channel
+                                        { seance = seance
+                                        , channel = channel
+                                        , login = ""
+                                        , password = ""
+                                        , loading = False
+                                        , response = Nothing
+                                        }
+
+                                Err error ->
+                                    Error error
+                    }
+                        => Cmd.none
+
+                _ ->
+                    default
+
+        LoginMsg login ->
+            case state.step of
+                Channel c ->
+                    { state | step = Channel { c | login = login } } => Cmd.none
+
+                _ ->
+                    default
+
+        PasswordMsg password ->
+            case state.step of
+                Channel c ->
+                    { state | step = Channel { c | password = password } } => Cmd.none
+
+                _ ->
+                    default
+
+        LoginRequest ->
+            case state.step of
+                Channel c ->
+                    { state | step = Channel { c | loading = True } }
+                        => Postgrest.send LoginResult (Rpc.login c)
+
+                _ ->
+                    default
+
+        LoginResult result ->
+            case state.step of
+                Channel c ->
+                    case result of
+                        Ok () ->
+                            state => Cmd.none
+
+                        Err error ->
+                            { state
+                                | step =
+                                    Channel
+                                        { c
+                                            | loading = False
+                                            , response = Just (Err error)
+                                        }
+                            }
+                                => Cmd.none
+
+                _ ->
+                    default
+
+        ChannelMsg payload ->
+            case state.step of
+                Channel c ->
+                    case Decode.decodeString Session.decoder payload of
+                        Ok session ->
+                            Util.dispatch PageMsg
+                                (\page ->
+                                    { state
+                                        | step =
+                                            Session
+                                                { seance = c.seance
+                                                , channel = c.channel
+                                                , session = session
+                                                , page = page
+                                                }
+                                    }
+                                )
+                                (Page.init state.route session)
+
+                        Err error ->
+                            { state
+                                | step =
+                                    Channel
+                                        { c
+                                            | loading = False
+                                            , response = Just (Err Postgrest.Decode)
+                                        }
+                            }
+                                => Cmd.none
+
+                _ ->
+                    default
+
+        PageMsg subMsg ->
+            case state.step of
+                Session s ->
+                    Util.dispatch PageMsg
+                        (\page -> { state | step = Session { s | page = page } })
+                        (Page.update s.session subMsg s.page)
+
+                _ ->
+                    default
+
+        LogoutMsg ->
+            case state.step of
+                Session s ->
+                    { state
+                        | step =
                             Channel
-                                { seance = seance
-                                , channel = channel
+                                { seance = s.seance
+                                , channel = s.channel
                                 , login = ""
                                 , password = ""
                                 , loading = False
                                 , response = Nothing
                                 }
+                    }
+                        => Cmd.none
 
-                        Err error ->
-                            Error error
-            }
-                => Cmd.none
+                _ ->
+                    default
 
-        ( Channel c, LoginMsg login ) ->
-            { state | step = Channel { c | login = login } } => Cmd.none
-
-        ( Channel c, PasswordMsg password ) ->
-            { state | step = Channel { c | password = password } } => Cmd.none
-
-        ( Channel c, LoginRequest ) ->
-            { state | step = Channel { c | loading = True } }
-                => Postgrest.send LoginResult (Rpc.login c)
-
-        ( Channel c, LoginResult result ) ->
-            case result of
-                Ok () ->
-                    state => Cmd.none
-
-                Err error ->
-                    { state | step = Channel { c | loading = False, response = Just (Err error) } } => Cmd.none
-
-        ( Channel c, ChannelMsg payload ) ->
-            case Decode.decodeString Session.decoder payload of
-                Ok session ->
+        RouteMsg route ->
+            case state.step of
+                Session s ->
                     Util.dispatch PageMsg
-                        (\page -> { state | step = Session { channel = c.channel, session = session, page = page } })
-                        (Page.init state.route session)
+                        (\page -> { state | route = route, step = Session { s | page = page } })
+                        (Page.init route s.session)
 
-                Err error ->
-                    { state | step = Channel { c | loading = False, response = Just (Err Postgrest.Decode) } } => Cmd.none
+                _ ->
+                    { state | route = route } => Cmd.none
 
-        ( Session s, RouteMsg route ) ->
-            Util.dispatch PageMsg
-                (\page -> { state | route = route, step = Session { s | page = page } })
-                (Page.init route s.session)
-
-        ( _, RouteMsg route ) ->
-            { state | route = route } => Cmd.none
-
-        ( _, NavbarMsg navbar ) ->
+        NavbarMsg navbar ->
             { state | navbar = navbar } => Cmd.none
 
-        ( step, msg ) as pair ->
-            Basics.always state (Debug.log "Unhandled" pair) => Cmd.none
 
 
-
-{- TODO cmd -}
 -- MAIN --
 
 

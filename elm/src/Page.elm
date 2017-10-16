@@ -125,8 +125,8 @@ seanceMsg msg state =
             dispatch ThingItemMsg Page.ThingItem.seanceMsg
 
 
-update : Msg -> Session -> State -> ( State, Cmd Msg )
-update msg session state =
+update : Session -> Msg -> State -> ( State, Cmd Msg )
+update session msg state =
     case ( msg, state ) of
         ( HomeMsg subMsg, HomeState subState ) ->
             Util.dispatch HomeMsg HomeState (Page.Home.update session subMsg subState)
