@@ -1,4 +1,4 @@
-module Page.ThingItem exposing (..)
+module Page.NotFound exposing (..)
 
 import Data.SeanceMsg exposing (SeanceMsg)
 import Data.Session exposing (Session)

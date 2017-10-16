@@ -12,6 +12,7 @@ import Uuid exposing (Uuid)
 
 type Route
     = Home
+    | NotFound
     | ThingRoll
     | ThingItem Uuid
 
@@ -32,6 +33,9 @@ toString route =
             case route of
                 Home ->
                     [ "" ]
+
+                NotFound ->
+                    [ "not-found" ]
 
                 ThingRoll ->
                     [ "thing" ]
@@ -60,9 +64,9 @@ href route =
     Attr.href (toString route)
 
 
-fromLocation : Location -> Maybe Route
+fromLocation : Location -> Route
 fromLocation location =
     if String.isEmpty location.hash then
-        Just Home
+        Home
     else
-        Url.parseHash parser location
+        Maybe.withDefault NotFound (Url.parseHash parser location)

@@ -1,11 +1,13 @@
-module Page exposing (Msg, State, update, view)
+module Page exposing (Msg, State, init, update, view)
 
-import Data.Page exposing (SeanceMsg, Session)
+import Data.SeanceMsg exposing (SeanceMsg)
+import Data.Session exposing (Session)
 import Html exposing (Html)
 import Page.Home
+import Page.NotFound
 import Page.ThingItem
 import Page.ThingRoll
-import Rocket exposing ((=>))
+import Route exposing (Route)
 import Util
 
 
@@ -23,30 +25,49 @@ import Util
 
 type State
     = HomeState Page.Home.State
+    | NotFoundState Page.NotFound.State
     | ThingRollState Page.ThingRoll.State
     | ThingItemState Page.ThingItem.State
 
 
+init : Route -> Session -> ( State, Cmd Msg )
+init route session =
+    case route of
+        Route.Home ->
+            Util.dispatch HomeMsg HomeState (Page.Home.init session)
 
---init : Session -> Route -> ( State, Cmd Msg )
+        Route.NotFound ->
+            Util.dispatch NotFoundMsg NotFoundState (Page.NotFound.init session)
+
+        Route.ThingRoll ->
+            Util.dispatch ThingRollMsg ThingRollState (Page.ThingRoll.init session)
+
+        Route.ThingItem uuid ->
+            Util.dispatch ThingItemMsg ThingItemState (Page.ThingItem.init session)
+
+
+
 -- VIEW --
 
 
 view : Session -> State -> Html Msg
 view session state =
     let
-        do fMsg subState pageView =
+        dispatch fMsg subState pageView =
             pageView session subState |> Html.map fMsg
     in
     case state of
         HomeState subState ->
-            do HomeMsg subState Page.Home.view
+            dispatch HomeMsg subState Page.Home.view
+
+        NotFoundState subState ->
+            dispatch NotFoundMsg subState Page.NotFound.view
 
         ThingRollState subState ->
-            do ThingRollMsg subState Page.ThingRoll.view
+            dispatch ThingRollMsg subState Page.ThingRoll.view
 
         ThingItemState subState ->
-            do ThingItemMsg subState Page.ThingItem.view
+            dispatch ThingItemMsg subState Page.ThingItem.view
 
 
 
@@ -56,18 +77,21 @@ view session state =
 subscriptions : Session -> State -> Sub Msg
 subscriptions session state =
     let
-        do fMsg subState pageSubscriptions =
+        dispatch fMsg subState pageSubscriptions =
             pageSubscriptions session subState |> Sub.map fMsg
     in
     case state of
         HomeState subState ->
-            do HomeMsg subState Page.Home.subscriptions
+            dispatch HomeMsg subState Page.Home.subscriptions
+
+        NotFoundState subState ->
+            dispatch NotFoundMsg subState Page.NotFound.subscriptions
 
         ThingRollState subState ->
-            do ThingRollMsg subState Page.ThingRoll.subscriptions
+            dispatch ThingRollMsg subState Page.ThingRoll.subscriptions
 
         ThingItemState subState ->
-            do ThingItemMsg subState Page.ThingItem.subscriptions
+            dispatch ThingItemMsg subState Page.ThingItem.subscriptions
 
 
 
@@ -76,6 +100,7 @@ subscriptions session state =
 
 type Msg
     = HomeMsg Page.Home.Msg
+    | NotFoundMsg Page.NotFound.Msg
     | ThingRollMsg Page.ThingRoll.Msg
     | ThingItemMsg Page.ThingItem.Msg
 
@@ -83,18 +108,21 @@ type Msg
 seanceMsg : SeanceMsg -> State -> Maybe Msg
 seanceMsg msg state =
     let
-        do fMsg pageSeanceMsg =
+        dispatch fMsg pageSeanceMsg =
             pageSeanceMsg msg |> Maybe.map fMsg
     in
     case state of
         HomeState _ ->
-            do HomeMsg Page.Home.seanceMsg
+            dispatch HomeMsg Page.Home.seanceMsg
+
+        NotFoundState _ ->
+            dispatch NotFoundMsg Page.NotFound.seanceMsg
 
         ThingRollState _ ->
-            do ThingRollMsg Page.ThingRoll.seanceMsg
+            dispatch ThingRollMsg Page.ThingRoll.seanceMsg
 
         ThingItemState _ ->
-            do ThingItemMsg Page.ThingItem.seanceMsg
+            dispatch ThingItemMsg Page.ThingItem.seanceMsg
 
 
 update : Msg -> Session -> State -> ( State, Cmd Msg )
@@ -110,4 +138,4 @@ update msg session state =
             Util.dispatch ThingItemMsg ThingItemState (Page.ThingItem.update session subMsg subState)
 
         _ ->
-            state => Cmd.none
+            ( state, Cmd.none )

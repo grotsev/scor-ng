@@ -1,6 +1,7 @@
 module Page.Home exposing (..)
 
-import Data.Page exposing (SeanceMsg, Session)
+import Data.SeanceMsg exposing (SeanceMsg)
+import Data.Session exposing (Session)
 import Html exposing (Html)
 import Rocket exposing ((=>))
 
