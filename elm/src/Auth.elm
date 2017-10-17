@@ -92,7 +92,7 @@ update seance msg ({ login, password, loading, response } as state) =
 
         LoginRequest ->
             { state | loading = True }
-                => Postgrest.send LoginResult (Rpc.login { seance = seance, login = login, password = password })
+                => Postgrest.send LoginResult (Rpc.auth { seance = seance, login = login, password = password })
 
         LoginResult result ->
             case result of

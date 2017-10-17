@@ -7,14 +7,14 @@ import Postgrest
 import Uuid exposing (Uuid)
 
 
-seanceChannel :
+channelSeance :
     { a
         | seance : Uuid
     }
     -> Http.Request String
-seanceChannel =
+channelSeance =
     Postgrest.rpc
-        { url = "http://localhost:3001/rpc/seance_channel"
+        { url = "http://localhost:3001/rpc/channel_seance"
         , encode =
             \{ seance } ->
                 Encode.object
@@ -25,16 +25,16 @@ seanceChannel =
         Nothing
 
 
-login :
+auth :
     { a
         | seance : Uuid
         , login : String
         , password : String
     }
     -> Http.Request ()
-login =
+auth =
     Postgrest.rpc
-        { url = "http://localhost:3001/rpc/login"
+        { url = "http://localhost:3001/rpc/auth"
         , encode =
             \{ seance, login, password } ->
                 Encode.object

@@ -155,7 +155,7 @@ update msg state =
             case state.step of
                 Init ->
                     { state | step = Seance seance }
-                        => Postgrest.send ChannelResult (Rpc.seanceChannel { seance = seance })
+                        => Postgrest.send ChannelResult (Rpc.channelSeance { seance = seance })
 
                 _ ->
                     default
