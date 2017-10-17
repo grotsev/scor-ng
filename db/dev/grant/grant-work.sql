@@ -1,6 +1,6 @@
 grant select on table
   application
-to scoring_user;
+to routine;
 
 grant insert on table
   application
@@ -30,7 +30,7 @@ grant select, insert, update on table
 , individual_kin
 , pledge
   -- pkb
-to scoring_user;
+to routine;
 
 grant delete on table
   individual_responsibility
@@ -38,8 +38,8 @@ grant delete on table
 , application_stage
 , contract
 , contract_attract
-to scoring_user;
+to routine;
 
 grant select, insert, update, delete on table
   rework
-to scoring_user;
+to routine;

@@ -1,18 +1,13 @@
 create function current_actor(
 ) returns uuid
-  language plpgsql
+  language sql
   stable
+  strict
   security definer
 as $function$
-declare
-  result uuid;
-begin
-  select current_setting('jwt.claims.actor') into result;
-  return result;
-exception
-  when undefined_object then
-    return null;
-end;
+
+  select current_setting('jwt.claims.actor', null)::uuid;
+
 $function$;
 
-comment on function current_actor() is 'Get current actor by JWT';
+comment on function current_actor() is 'Current actor by JWT';

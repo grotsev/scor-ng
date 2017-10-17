@@ -9,12 +9,11 @@ source build/etc/env.conf
 psql postgres://$DB_ADMIN:$DB_ADMIN_PASSWORD@$DB_HOST:$DB_PORT/postgres -q <<EOF
 drop database if exists $DB_NAME;
 
-drop role if exists anonymous;
-drop role if exists authenticator;
 drop role if exists scoring;
-drop role if exists scoring_user;
-
+drop role if exists authenticator;
+drop role if exists anonymous;
 drop role if exists admin;
+drop role if exists routine;
 drop role if exists attract;
 drop role if exists declare;
 drop role if exists verify;
@@ -32,33 +31,33 @@ drop role if exists blacklist;
 drop role if exists terrolist;
 drop role if exists pkb;
 
-create role anonymous;
-create role authenticator with login password 'authenticator123' noinherit in role anonymous;
-create role scoring       with login password 'scoring123'       noinherit;
-create role scoring_user;
+create role scoring       with login password 'scoring123';
+create role authenticator with login password 'authenticator123' noinherit;
+create role anonymous     with role authenticator;
+create role admin         with role authenticator;
+create role routine;
+create role attract       with role authenticator in role routine;
+create role declare       with role authenticator in role routine;
+create role verify        with role authenticator in role routine;
+create role pledgerate    with role authenticator in role routine;
+create role lawyer        with role authenticator in role routine;
+create role security      with role authenticator in role routine;
+create role risk          with role authenticator in role routine;
+create role retailcom     with role authenticator in role routine;
+create role creditcom     with role authenticator in role routine;
+create role middle        with role authenticator in role routine;
+create role signing       with role authenticator in role routine;
+create role pledgereg     with role authenticator in role routine;
+create role creditadmin   with role authenticator in role routine;
+create role blacklist     with role authenticator in role routine;
+create role terrolist     with role authenticator in role routine;
+create role pkb           with role authenticator in role routine;
 
-comment on role anonymous     is 'No authentication is provided';
+comment on role scoring       is 'Schema owner';
 comment on role authenticator is 'Intermediate to become anonymous or an user';
-comment on role board         is 'Schema owner';
-comment on role scoring_user  is 'Unprivileged user';
-
-create role admin       with role authenticator;
-create role attract     with role authenticator in role scoring_user;
-create role declare     with role authenticator in role scoring_user;
-create role verify      with role authenticator in role scoring_user;
-create role pledgerate  with role authenticator in role scoring_user;
-create role lawyer      with role authenticator in role scoring_user;
-create role security    with role authenticator in role scoring_user;
-create role risk        with role authenticator in role scoring_user;
-create role retailcom   with role authenticator in role scoring_user;
-create role creditcom   with role authenticator in role scoring_user;
-create role middle      with role authenticator in role scoring_user;
-create role signing     with role authenticator in role scoring_user;
-create role pledgereg   with role authenticator in role scoring_user;
-create role creditadmin with role authenticator in role scoring_user;
-create role blacklist   with role authenticator in role scoring_user;
-create role terrolist   with role authenticator in role scoring_user;
-create role pkb         with role authenticator in role scoring_user;
+comment on role anonymous     is 'No authentication is provided';
+comment on role admin         is 'Privileged user';
+comment on role routine       is 'Unprivileged user';
 
 create database $DB_NAME owner scoring;
 EOF
@@ -68,5 +67,5 @@ create extension "uuid-ossp";
 create extension "pgcrypto";
 create extension "pgjwt";
 create extension "pgtap";
-alter database $DB_NAME set scoring.jwt_secret to '$JWT_SECRET'
+alter database $DB_NAME set app.jwt_secret to '$JWT_SECRET'
 EOF

@@ -48,9 +48,9 @@ grant select on table
 , speciality
 , tenure
   -- pkb
-to scoring_user;
+to routine;
 
--- copy from scoring_user
+-- copy from routine
 grant select, insert, update, delete on table
   -- system
   i18n
