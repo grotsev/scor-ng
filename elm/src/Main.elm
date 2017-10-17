@@ -1,5 +1,6 @@
 module Main exposing (main)
 
+import Auth
 import Bootstrap.Button as Button
 import Bootstrap.Grid as Grid
 import Bootstrap.Navbar as Navbar
@@ -8,7 +9,6 @@ import Html exposing (Html)
 import Html.Attributes as Attr
 import I18n.Rus as I18n
 import Json.Decode as Decode exposing (Value)
-import Login
 import Navigation exposing (Location)
 import Page
 import Postgrest
@@ -32,10 +32,10 @@ import WebSocket
 type Step
     = Init
     | Seance Uuid
-    | Channel
+    | Auth
         { seance : Uuid
         , channel : String
-        , login : Login.State
+        , auth : Auth.State
         }
     | Session
         { seance : Uuid
@@ -82,10 +82,10 @@ view state =
             Html.text "Seance generating..."
 
         Seance seance ->
-            Html.text "Channel requesting..."
+            Html.text "Auth requesting..."
 
-        Channel { login } ->
-            Html.map LoginMsg (Login.view login)
+        Auth { auth } ->
+            Html.map LoginMsg (Auth.view auth)
 
         Session { session, page } ->
             Html.div []
@@ -119,7 +119,7 @@ view state =
 subscriptions : State -> Sub Msg
 subscriptions state =
     case state.step of
-        Channel { channel } ->
+        Auth { channel } ->
             WebSocket.listen ("ws://localhost:3002/" ++ channel) ChannelMsg
 
         Session { channel } ->
@@ -136,7 +136,7 @@ subscriptions state =
 type Msg
     = SeanceResult Uuid
     | ChannelResult (Postgrest.Result String)
-    | LoginMsg Login.Msg
+    | LoginMsg Auth.Msg
     | ChannelMsg String
     | PageMsg Page.Msg
     | LogoutMsg
@@ -167,10 +167,10 @@ update msg state =
                         | step =
                             case channelResult of
                                 Ok channel ->
-                                    Channel
+                                    Auth
                                         { seance = seance
                                         , channel = channel
-                                        , login = Login.init
+                                        , auth = Auth.init
                                         }
 
                                 Err error ->
@@ -183,17 +183,17 @@ update msg state =
 
         LoginMsg subMsg ->
             case state.step of
-                Channel c ->
+                Auth c ->
                     Util.dispatch LoginMsg
-                        (\login -> { state | step = Channel { c | login = login } })
-                        (Login.update c.seance subMsg c.login)
+                        (\auth -> { state | step = Auth { c | auth = auth } })
+                        (Auth.update c.seance subMsg c.auth)
 
                 _ ->
                     default
 
         ChannelMsg payload ->
             case state.step of
-                Channel c ->
+                Auth c ->
                     case Decode.decodeString Session.decoder payload of
                         Ok session ->
                             Util.dispatch PageMsg
@@ -212,7 +212,7 @@ update msg state =
 
                         Err error ->
                             { state
-                                | step = Channel { c | login = Login.error c.login }
+                                | step = Auth { c | auth = Auth.error c.auth }
                             }
                                 => Cmd.none
 
@@ -234,10 +234,10 @@ update msg state =
                 Session s ->
                     { state
                         | step =
-                            Channel
+                            Auth
                                 { seance = s.seance
                                 , channel = s.channel
-                                , login = Login.init
+                                , auth = Auth.init
                                 }
                     }
                         => Cmd.none

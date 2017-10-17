@@ -1,4 +1,4 @@
-module Login exposing (Msg, State, error, init, update, view)
+module Auth exposing (Msg, State, error, init, update, view)
 
 import Bootstrap.Grid as Grid
 import Field
