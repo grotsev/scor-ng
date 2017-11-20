@@ -1,0 +1,31 @@
+{
+    "priority": 10,
+    "request": {
+        "method": "POST",
+        "url": "/acs/api/access",
+        "bodyPatterns": [ {
+            "matchesJsonPath": "$[?(@.accountName == '${ACCOUNT}' && @.password == '111')]"
+        } ]
+    },
+    "response": {
+        "status": 200,
+        "headers": {
+            "Content-Type": "application/json"
+        },
+        "jsonBody": {
+            "body": {
+                "guid": "${GUID}",
+                "accountName": "${ACCOUNT}",
+                "surname": "${ACCOUNT}_surname",
+                "name": "${ACCOUNT}_name",
+                "patronymic": "${ACCOUNT}_patronymic",
+                "email": "${ACCOUNT}@example.com",
+                "tabNumber": ${TAB_NUMBER},
+                "isBlocked": false
+            },
+            "roles": [
+
+            ]
+        }
+    }
+}

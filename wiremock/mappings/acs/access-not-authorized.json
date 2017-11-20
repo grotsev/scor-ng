@@ -1,0 +1,18 @@
+{
+    "priority": 20,
+    "request": {
+        "method": "POST",
+        "url": "/acs/api/access"
+    },
+    "response": {
+        "status": 404,
+        "headers": {
+            "Content-Type": "application/json"
+        },
+        "jsonBody": {
+            "body": {
+                "message": "Illegal username or password"
+            }
+        }
+    }
+}

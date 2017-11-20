@@ -1,0 +1,21 @@
+{
+    "priority": 10,
+    "request": {
+        "method": "POST",
+        "url": "/acs/api/access",
+        "bodyPatterns": [ {
+            "matchesJsonPath": "$[?(@.accountName == '${ACCOUNT}' && @.password == '111')]"
+        } ]
+    },
+    "response": {
+        "status": 450,
+        "headers": {
+            "Content-Type": "application/json"
+        },
+        "jsonBody": {
+            "body": {
+                "message": "User is ok but it is blocked"
+            }
+        }
+    }
+}
