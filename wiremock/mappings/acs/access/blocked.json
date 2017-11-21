@@ -2,7 +2,7 @@
     "priority": 10,
     "request": {
         "method": "POST",
-        "url": "/acs/api/access",
+        "url": "${BASE}/access",
         "bodyPatterns": [ {
             "matchesJsonPath": "$[?(@.accountName == '${ACCOUNT}' && @.password == '111')]"
         } ]

@@ -1,15 +1,20 @@
 #!/bin/bash
 
-mkdir -p build/wiremock
-cp -upr wiremock/mappings build/wiremock
+rm -r build/wiremock
+
+FROM=wiremock/mappings/acs/access
+TO=build/wiremock/mappings/acs/access
+
+mkdir -p $TO
 cp -upr wiremock/__files  build/wiremock
 
-export GUID="GUID-001-004-004~GR1"
-export ACCOUNT=admin
-export TAB_NUMBER=1
-envsubst < wiremock/template/acs/access-success.json > build/wiremock/mappings/acs/access-admin.json
+export BASE=/acs/api
 
-export ACCOUNT=blocked
-envsubst < wiremock/template/acs/access-blocked.json > build/wiremock/mappings/acs/access-blocked.json
+env \
+    envsubst < $FROM/noauth.json > $TO/noauth.json
+env GUID=GUID-001-004-004~GR1 ACCOUNT=admin TAB_NUMBER=1 \
+    envsubst < $FROM/success.json > $TO/admin.json
+env ACCOUNT=blocked \
+    envsubst < $FROM/blocked.json > $TO/blocked.json
 
 java -jar opt/wiremock-standalone-2.11.0.jar --root-dir build/wiremock --no-request-journal
