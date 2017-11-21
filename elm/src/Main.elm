@@ -147,7 +147,7 @@ type Msg
 update : Msg -> State -> ( State, Cmd Msg )
 update msg state =
     let
-        default =
+        default () =
             Basics.always state (Debug.log "Unhandled" ( msg, state.step )) => Cmd.none
     in
     case msg of
@@ -158,7 +158,7 @@ update msg state =
                         => Postgrest.send ChannelResult (Rpc.channelSeance { seance = seance })
 
                 _ ->
-                    default
+                    default ()
 
         ChannelResult channelResult ->
             case state.step of
@@ -179,7 +179,7 @@ update msg state =
                         => Cmd.none
 
                 _ ->
-                    default
+                    default ()
 
         LoginMsg subMsg ->
             case state.step of
@@ -189,7 +189,7 @@ update msg state =
                         (Auth.update c.seance subMsg c.auth)
 
                 _ ->
-                    default
+                    default ()
 
         ChannelMsg payload ->
             case state.step of
@@ -217,7 +217,7 @@ update msg state =
                                 => Cmd.none
 
                 _ ->
-                    default
+                    default ()
 
         PageMsg subMsg ->
             case state.step of
@@ -227,7 +227,7 @@ update msg state =
                         (Page.update s.session subMsg s.page)
 
                 _ ->
-                    default
+                    default ()
 
         LogoutMsg ->
             case state.step of
@@ -243,7 +243,7 @@ update msg state =
                         => Cmd.none
 
                 _ ->
-                    default
+                    default ()
 
         RouteMsg route ->
             case state.step of

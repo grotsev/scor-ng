@@ -58,7 +58,7 @@ view { login, password, loading, response } =
             { id = "register-password"
             , title = "Пароль"
             , help = Nothing
-            , validation = Validate.secure password
+            , validation = Validate.filled password
             , input = Field.password PasswordMsg password
             }
     in
