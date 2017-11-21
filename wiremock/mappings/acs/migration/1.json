@@ -1,0 +1,62 @@
+{
+    "priority": 10,
+    "request": {
+        "method": "POST",
+        "url": "/acs/api/migration"
+    },
+    "response": {
+        "status": 200,
+        "headers": {
+            "Content-Type": "application/json"
+        },
+        "jsonBody": {
+            "users": [
+                {
+                    "guid": "GUID-001-004-004~GR1",
+                    "accountName": "admin",
+                    "surname": "admin_surname",
+                    "name": "admin_name",
+                    "patronymic": "admin_patronymic",
+                    "email": "admin@example.com",
+                    "tabNumber": 1,
+                    "isBlocked": false
+                }
+            ],
+            "roles": [
+                {
+                    "id": "1",
+                    "code": "ADMINISTRATOR",
+                    "name": "Администратор"
+                }
+            ],
+            "functions": [
+                {
+                    "id": "1",
+                    "code": "ADMINISTRATOR",
+                    "name": "ADMINISTRATOR"
+                },
+                {
+                    "id": "2",
+                    "code": "CAN_ADMIN_HSBK_CONTRACT",
+                    "name": "CAN_ADMIN_HSBK_CONTRACT"
+                }
+            ],
+            "role_function_pairs": [
+                {
+                    "role_id": "1",
+                    "function_id": "1"
+                },
+                {
+                    "role_id": "1",
+                    "function_id": "2"
+                }
+            ],
+            "user_role_pairs": [
+                {
+                    "user_guid": "GUID-001-004-004~GR1",
+                    "role_id": "1"
+                }
+            ]
+        }
+    }
+}

@@ -1,19 +1,17 @@
 #!/bin/bash
 
 rm -r build/wiremock
+cp -upr wiremock/__files  build/wiremock
+
 
 FROM=wiremock/mappings/acs/access
 TO=build/wiremock/mappings/acs/access
-
 mkdir -p $TO
-cp -upr wiremock/__files  build/wiremock
 
-export BASE=/acs/api
+FUNC_ADMINISTRATOR=`env ID=1 CODE=ADMINISTRATOR envsubst < $FROM/function.json`
+FUNC_CAN_ADMIN_HSBK_CONTRACT=`env ID=2 CODE=CAN_ADMIN_HSBK_CONTRACT envsubst < $FROM/function.json`
 
-export FUNC_ADMINISTRATOR=`env ID=1 CODE=ADMINISTRATOR envsubst < $FROM/function.json`
-export FUNC_CAN_ADMIN_HSBK_CONTRACT=`env ID=2 CODE=CAN_ADMIN_HSBK_CONTRACT envsubst < $FROM/function.json`
-
-export ROLE_ADMINISTRATOR=`env ID=1 CODE=ADMINISTRATOR NAME="Администратор" \
+ROLE_ADMINISTRATOR=`env ID=1 CODE=ADMINISTRATOR NAME="Администратор" \
     FUNCTIONS="$FUNC_ADMINISTRATOR, $FUNC_CAN_ADMIN_HSBK_CONTRACT" envsubst < $FROM/role.json`
 
 env \
@@ -22,5 +20,14 @@ env GUID=GUID-001-004-004~GR1 ACCOUNT=admin TAB_NUMBER=1 ROLES="$ROLE_ADMINISTRA
     envsubst < $FROM/success.json > $TO/admin.json
 env ACCOUNT=blocked \
     envsubst < $FROM/blocked.json > $TO/blocked.json
+
+
+FROM=wiremock/mappings/acs/migration
+TO=build/wiremock/mappings/acs/migration
+mkdir -p $TO
+
+env \
+    envsubst < $FROM/1.json > $TO/1.json
+
 
 java -jar opt/wiremock-standalone-2.11.0.jar --root-dir build/wiremock --no-request-journal
