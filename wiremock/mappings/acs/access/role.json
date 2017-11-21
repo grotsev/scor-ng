@@ -1,0 +1,8 @@
+{
+                    "id": "${ID}",
+                    "code": "${CODE}",
+                    "name": "${NAME}",
+                    "functions": [
+                        ${FUNCTIONS}
+                    ]
+                }

@@ -10,9 +10,15 @@ cp -upr wiremock/__files  build/wiremock
 
 export BASE=/acs/api
 
+export FUNC_ADMINISTRATOR=`env ID=1 CODE=ADMINISTRATOR envsubst < $FROM/function.json`
+export FUNC_CAN_ADMIN_HSBK_CONTRACT=`env ID=2 CODE=CAN_ADMIN_HSBK_CONTRACT envsubst < $FROM/function.json`
+
+export ROLE_ADMINISTRATOR=`env ID=1 CODE=ADMINISTRATOR NAME="Администратор" \
+    FUNCTIONS="$FUNC_ADMINISTRATOR, $FUNC_CAN_ADMIN_HSBK_CONTRACT" envsubst < $FROM/role.json`
+
 env \
     envsubst < $FROM/noauth.json > $TO/noauth.json
-env GUID=GUID-001-004-004~GR1 ACCOUNT=admin TAB_NUMBER=1 \
+env GUID=GUID-001-004-004~GR1 ACCOUNT=admin TAB_NUMBER=1 ROLES="$ROLE_ADMINISTRATOR" \
     envsubst < $FROM/success.json > $TO/admin.json
 env ACCOUNT=blocked \
     envsubst < $FROM/blocked.json > $TO/blocked.json
