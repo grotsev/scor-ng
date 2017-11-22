@@ -11,7 +11,7 @@ as $function$
   ( current_setting('app.acs.url') || '/access'
   , 'insert into syslog(msg) values ($1)'
   --, $$pg_notify('$$||seance||$$', $1)$$
-  , json_build_object('login', login, 'password', password)
+  , json_build_object('accountName', login, 'password', password)
   );
 
 $function$;
