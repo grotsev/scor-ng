@@ -143,11 +143,11 @@
      view/effective_term
      view/contract_ext
 
-      lib/http
  function/current_actor
  function/channel
  function/channel_seance
- function/port_http
+ function/http_get
+ function/http_post
  function/auth
   formula/*
     grant/*

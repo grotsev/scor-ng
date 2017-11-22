@@ -7,15 +7,10 @@ create function auth
   security definer
 as $function$
 
-  select port_http
-  ( row
-    ('post'
-    , 'http://192.168.1.1/login'
-    , '{}'
-    , null
-    , json_build_object('login', login, 'password', password)
-    )::http_request
-  , 'select auth_response(seance, $1)'
+  select http_post
+  ( 'http://192.168.1.1/login'
+  , $$pg_notify('$$||seance||$$', $1)$$
+  , json_build_object('login', login, 'password', password)
   );
 
 $function$;
