@@ -1,0 +1,8 @@
+#!/bin/bash
+
+mkdir -p build/etc
+cp -u -p etc/env.conf build/etc/env.conf
+source build/etc/env.conf
+envsubst < etc/http_port.conf > build/etc/http_port.conf
+
+opt/http_port build/etc/http_port.conf

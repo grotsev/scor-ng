@@ -10,6 +10,7 @@ psql postgres://$DB_ADMIN:$DB_ADMIN_PASSWORD@$DB_HOST:$DB_PORT/postgres -q <<EOF
 drop database if exists $DB_NAME;
 
 drop role if exists scoring;
+drop role if exists http;
 drop role if exists authenticator;
 drop role if exists anonymous;
 drop role if exists admin;
@@ -32,6 +33,7 @@ drop role if exists terrolist;
 drop role if exists pkb;
 
 create role scoring       with login password 'scoring123';
+create role http          with login password 'http123';
 create role authenticator with login password 'authenticator123' noinherit;
 create role anonymous     with role authenticator;
 create role admin         with role authenticator;
@@ -54,6 +56,7 @@ create role terrolist     with role authenticator in role routine;
 create role pkb           with role authenticator in role routine;
 
 comment on role scoring       is 'Schema owner';
+comment on role http          is 'Callback from http_port';
 comment on role authenticator is 'Intermediate to become anonymous or an user';
 comment on role anonymous     is 'No authentication is provided';
 comment on role admin         is 'Privileged user';
