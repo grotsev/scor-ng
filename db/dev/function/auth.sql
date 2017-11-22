@@ -8,8 +8,9 @@ create function auth
 as $function$
 
   select http_post
-  ( 'http://192.168.1.1/login'
-  , $$pg_notify('$$||seance||$$', $1)$$
+  ( current_setting('app.acs.url') || '/access'
+  , 'insert into syslog(msg) values ($1)'
+  --, $$pg_notify('$$||seance||$$', $1)$$
   , json_build_object('login', login, 'password', password)
   );
 

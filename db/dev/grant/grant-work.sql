@@ -1,3 +1,6 @@
+grant insert on table syslog to public;
+grant usage on sequence syslog_syslog_seq to public;
+
 grant select on table
   application
 to routine;

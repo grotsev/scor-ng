@@ -70,5 +70,6 @@ create extension "uuid-ossp";
 create extension "pgcrypto";
 create extension "pgjwt";
 create extension "pgtap";
-alter database $DB_NAME set app.jwt_secret to '$JWT_SECRET'
+alter database $DB_NAME set app.jwt_secret to '$JWT_SECRET';
+alter database $DB_NAME set app.acs.url to '$ACS_URL';
 EOF

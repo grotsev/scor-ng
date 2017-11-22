@@ -29,6 +29,8 @@
      data/rus/i18n_attr_title
      data/rus/i18n_attr_help
 
+    table/syslog
+
    domain/login
      type/jwt_token
     table/branch

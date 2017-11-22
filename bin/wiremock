@@ -1,5 +1,6 @@
 #!/bin/bash
 
+source build/etc/env.conf
 rm -r build/wiremock
 cp -upr wiremock/__files  build/wiremock
 
