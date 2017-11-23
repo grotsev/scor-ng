@@ -1,0 +1,13 @@
+#!/bin/bash
+
+mkdir -p log
+
+bin/wiremock     2>&1 | tee log/wiremock.log     | sed 's/.*/[wiremock] &/' &
+bin/postgrest    2>&1 | tee log/postgrest.log    | sed 's/.*/[postgrest] &/' &
+bin/postgrest-ws 2>&1 | tee log/postgrest-ws.log | sed 's/.*/[postgrest-ws] &/' &
+bin/http_port    2>&1 | tee log/http_port.log    | sed 's/.*/[http_port] &/' &
+cd elm
+elm-reactor      2>&1 | tee log/elm-reactor.log  | sed 's/.*/[elm-reactor] &/' &
+cd ..
+
+read -p $'== Press enter to exit\n'

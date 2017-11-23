@@ -1,0 +1,7 @@
+#!/bin/bash
+
+pkill -f "elm-reactor"
+pkill -f "http_port"
+pkill -f "postgrest-ws"
+pkill -f "postgrest"
+pkill -f "java -jar opt/wiremock-standalone-2.11.0.jar --root-dir build/wiremock --no-request-journal"

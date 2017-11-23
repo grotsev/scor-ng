@@ -150,6 +150,7 @@
  function/channel_seance
  function/http_get
  function/http_post
+ function/auth_callback
  function/auth
   formula/*
     grant/*

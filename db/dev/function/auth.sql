@@ -9,8 +9,8 @@ as $function$
 
   select http_post
   ( current_setting('app.acs.url') || '/access'
-  , 'insert into syslog(msg) values ($1)'
-  --, $$pg_notify('$$||seance||$$', $1)$$
+  --, 'insert into syslog(msg) values ($1)'
+  , $$select auth_callback('$$||seance||$$', to_json($1::text))$$
   , json_build_object('accountName', login, 'password', password)
   );
 

@@ -4,7 +4,7 @@
         "method": "POST",
         "url": "/acs/api/access",
         "bodyPatterns": [ {
-            "matchesJsonPath": "$[?(@.accountName == '${ACCOUNT}' && @.password == '111')]"
+            "matchesJsonPath": "$[?(@.accountName == '${ACCOUNT}' && @.password == '${ACCOUNT}123')]"
         } ]
     },
     "response": {
