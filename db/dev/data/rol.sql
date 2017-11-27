@@ -1,7 +1,8 @@
 insert into rol
   (rol          , i18n_rus                       )
 values
-  ('admin'      , 'администратор'                )
+  ('anonymous'  , 'аноним'                       )
+, ('admin'      , 'администратор'                )
 , ('attract'    , 'привлечение'                  )
 , ('blacklist'  , 'чёрный список'                )
 , ('terrolist'  , 'список террористов'           )

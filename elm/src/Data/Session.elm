@@ -8,7 +8,7 @@ import Uuid exposing (Uuid)
 type alias Session =
     { rol : String -- TODO Data.Rol
     , actor : Uuid
-    , login : String
+    , accountName : String
     , surname : String
     , name : String
     , token : String
@@ -20,7 +20,7 @@ decoder =
     DP.decode Session
         |> DP.required "rol" Decode.string
         |> DP.required "actor" Uuid.decoder
-        |> DP.required "login" Decode.string
+        |> DP.required "account_name" Decode.string
         |> DP.required "surname" Decode.string
         |> DP.required "name" Decode.string
         |> DP.required "token" Decode.string

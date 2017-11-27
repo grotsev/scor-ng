@@ -5,6 +5,7 @@
    domain/textarea
    domain/textfield
    domain/uuid_pk
+   domain/email
   trigger/created
   trigger/deleted_by
   trigger/modified_data
@@ -42,6 +43,7 @@
     table/actor
     table/actor_outlet
     table/actor_rol
+    table/acs_user
 
     table/currency
      data/currency
@@ -100,7 +102,6 @@
     table/contract_history
     table/contract
 
-   domain/email
    domain/iin
    domain/phone
     table/cashflow_kind

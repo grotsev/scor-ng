@@ -1,15 +1,15 @@
 insert into actor_rol
   select a.actor
-       , o.login as role
-  from actor a
-    cross join actor o
-  where a.login = 'all'
-    and o.login != 'all'
+       , o.account_name as role
+  from acs_user a
+    cross join acs_user o
+  where a.account_name = 'all'
+    and o.account_name != 'all'
 ;
 
 insert into actor_rol
   select actor
-       , login as role
-  from actor
-  where login != 'all'
+       , account_name as role
+  from acs_user
+  where account_name != 'all'
 ;

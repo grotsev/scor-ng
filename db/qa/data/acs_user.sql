@@ -1,0 +1,22 @@
+insert into acs_user
+  (actor                                       , guid                                        , account_name , surname              , name              , patronymic       , email                    , tab_number, isBlocked, current_rol)
+values
+  ('11110000-0000-0000-0000-000011110000'::uuid, '11110000-0000-0000-0000-000011110000'::uuid, 'all'        , 'surname_all'        , 'name_all'        , 'pat_all'        , 'all@example.com'        ,          1, false    , 'anonymous')
+, ('11110000-0000-0000-0000-000011110001'::uuid, '11110000-0000-0000-0000-000011110001'::uuid, 'admin'      , 'surname_admin'      , 'name_admin'      , 'pat_admin'      , 'admin@example.com'      ,          2, false    , 'anonymous')
+, ('11110000-0000-0000-0000-000011110002'::uuid, '11110000-0000-0000-0000-000011110002'::uuid, 'attract'    , 'surname_attract'    , 'name_attract'    , 'pat_attract'    , 'attract@example.com'    ,          3, false    , 'anonymous')
+, ('11110000-0000-0000-0000-000011110003'::uuid, '11110000-0000-0000-0000-000011110003'::uuid, 'declare'    , 'surname_declare'    , 'name_declare'    , 'pat_declare'    , 'declare@example.com'    ,          4, false    , 'anonymous')
+, ('11110000-0000-0000-0000-000011110004'::uuid, '11110000-0000-0000-0000-000011110004'::uuid, 'verify'     , 'surname_verify'     , 'name_verify'     , 'pat_verify'     , 'verify@example.com'     ,          5, false    , 'anonymous')
+, ('11110000-0000-0000-0000-000011110005'::uuid, '11110000-0000-0000-0000-000011110005'::uuid, 'pledgerate' , 'surname_pledgerate' , 'name_pledgerate' , 'pat_pledgerate' , 'pledgerate@example.com' ,          6, false    , 'anonymous')
+, ('11110000-0000-0000-0000-000011110006'::uuid, '11110000-0000-0000-0000-000011110006'::uuid, 'lawyer'     , 'surname_lawyer'     , 'name_lawyer'     , 'pat_lawyer'     , 'lawyer@example.com'     ,          7, false    , 'anonymous')
+, ('11110000-0000-0000-0000-000011110007'::uuid, '11110000-0000-0000-0000-000011110007'::uuid, 'security'   , 'surname_security'   , 'name_security'   , 'pat_security'   , 'security@example.com'   ,          8, false    , 'anonymous')
+, ('11110000-0000-0000-0000-000011110008'::uuid, '11110000-0000-0000-0000-000011110008'::uuid, 'risk'       , 'surname_risk'       , 'name_risk'       , 'pat_risk'       , 'risk@example.com'       ,          9, false    , 'anonymous')
+, ('11110000-0000-0000-0000-000011110009'::uuid, '11110000-0000-0000-0000-000011110009'::uuid, 'retailcom'  , 'surname_retailcom'  , 'name_retailcom'  , 'pat_retailcom'  , 'retailcom@example.com'  ,         10, false    , 'anonymous')
+, ('11110000-0000-0000-0000-000011110010'::uuid, '11110000-0000-0000-0000-000011110010'::uuid, 'creditcom'  , 'surname_creditcom'  , 'name_creditcom'  , 'pat_creditcom'  , 'creditcom@example.com'  ,         11, false    , 'anonymous')
+, ('11110000-0000-0000-0000-000011110011'::uuid, '11110000-0000-0000-0000-000011110011'::uuid, 'middle'     , 'surname_middle'     , 'name_middle'     , 'pat_middle'     , 'middle@example.com'     ,         12, false    , 'anonymous')
+, ('11110000-0000-0000-0000-000011110012'::uuid, '11110000-0000-0000-0000-000011110012'::uuid, 'signing'    , 'surname_signing'    , 'name_signing'    , 'pat_signing'    , 'signing@example.com'    ,         13, false    , 'anonymous')
+, ('11110000-0000-0000-0000-000011110013'::uuid, '11110000-0000-0000-0000-000011110013'::uuid, 'pledgereg'  , 'surname_pledgereg'  , 'name_pledgereg'  , 'pat_pledgereg'  , 'pledgereg@example.com'  ,         14, false    , 'anonymous')
+, ('11110000-0000-0000-0000-000011110014'::uuid, '11110000-0000-0000-0000-000011110014'::uuid, 'creditadmin', 'surname_creditadmin', 'name_creditadmin', 'pat_creditadmin', 'creditadmin@example.com',         15, false    , 'anonymous')
+, ('11110000-0000-0000-0000-000011110015'::uuid, '11110000-0000-0000-0000-000011110015'::uuid, 'blacklist'  , 'surname_blacklist'  , 'name_blacklist'  , 'pat_blacklist'  , 'blacklist@example.com'  ,         16, false    , 'anonymous')
+, ('11110000-0000-0000-0000-000011110016'::uuid, '11110000-0000-0000-0000-000011110016'::uuid, 'terrolist'  , 'surname_terrolist'  , 'name_terrolist'  , 'pat_terrolist'  , 'terrolist@example.com'  ,         17, false    , 'anonymous')
+, ('11110000-0000-0000-0000-000011110017'::uuid, '11110000-0000-0000-0000-000011110017'::uuid, 'pkb'        , 'surname_pkb'        , 'name_pkb'        , 'pat_pkb'        , 'pkb@example.com'        ,         18, false    , 'anonymous')
+;
