@@ -7,12 +7,10 @@ create function auth_callback
 as $function$
 begin
 
-    case response#>'{status}'
+    case (response#>'{status}')::text
     when '200' then
 
-        select actor  from acs_user where guid = response#>'{body,guid}';
-
-        if not found then
+        if not exists (select actor from acs_user where guid = response#>'{body,guid}') then
             with rows as (
                 insert into actor (actor) values (uuid_generate_v1mc()) returning actor
             )
