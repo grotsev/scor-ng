@@ -7,6 +7,8 @@ create function auth_callback
 as $function$
 declare
     json_result json;
+    the_error text;
+    the_detail text;
 begin
 
     case (response#>'{status}')::text
@@ -37,8 +39,8 @@ begin
               , patronymic   = response#>'{body,body,patronymic}'
               , email        = response#>'{body,body,email}'
               , tab_number   = response#>'{body,body,tabNumber}'
-              , is_blocked   = response#>'{body,body,isBlocked}'
-            where guid       = (response#>'{body,body,guid}')::text::boolean;
+              , is_blocked   = (response#>'{body,body,isBlocked}')::text::boolean
+            where guid       = (response#>'{body,body,guid}')::text::uuid;
         end if;
 
         with u as (
@@ -47,12 +49,12 @@ begin
             where guid = (response#>'{body,body,guid}')::text::uuid
         )
         select json_build_object
-            ( 'rol'    , u.current_rol
-            , 'actor'  , u.actor
-            , 'login'  , u.account_name
-            , 'surname', u.surname
-            , 'name'   , u.name
-            , 'token'  , sign
+            ( 'rol'           , u.current_rol
+            , 'actor'         , u.actor
+            , 'account_name'  , u.account_name
+            , 'surname'       , u.surname
+            , 'name'          , u.name
+            , 'token'         , sign
                 ( json_build_object
                     ( 'actor', actor
                     , 'role', current_rol
@@ -76,6 +78,10 @@ begin
     insert into syslog(msg) values (response::text);
     perform pg_notify('seance/'||seance, json_result::text);
 
+exception when others then
+    get stacked diagnostics the_error = message_text;
+    get stacked diagnostics the_detail = pg_exception_detail;
+    raise exception '% %', the_error, the_detail;
 end;
 $function$;
 
