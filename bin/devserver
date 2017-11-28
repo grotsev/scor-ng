@@ -14,8 +14,11 @@ killThemAll
 mkdir -p log
 
 bin/wiremock     2>&1 | tee log/wiremock.log     | sed 's/.*/[wiremock] &/' &
+sleep 0.2
 bin/postgrest    2>&1 | tee log/postgrest.log    | sed 's/.*/[postgrest] &/' &
+sleep 0.2
 bin/postgrest-ws 2>&1 | tee log/postgrest-ws.log | sed 's/.*/[postgrest-ws] &/' &
+sleep 0.2
 bin/http_port    2>&1 | tee log/http_port.log    | sed 's/.*/[http_port] &/' &
 cd elm
 elm-reactor      2>&1 | tee log/elm-reactor.log  | sed 's/.*/[elm-reactor] &/' &
