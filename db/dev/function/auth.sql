@@ -9,8 +9,7 @@ as $function$
 
   select http_post
   ( current_setting('app.acs.url') || '/access'
-  --, $$insert into syslog(msg) values ($1::json)$$
-  , $$select auth_callback('$$||seance||$$', $1::json)$$
+  , $$select auth_callback('$$||seance||$$', $1::text::json)$$
   , json_build_object('accountName', login, 'password', password)
   );
 

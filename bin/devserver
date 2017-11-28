@@ -1,5 +1,16 @@
 #!/bin/bash
 
+function killThemAll {
+    pkill -f "elm-reactor"
+    pkill -f "http_port"
+    pkill -f "postgrest-ws"
+    pkill -f "postgrest"
+    pkill -f "java -jar opt/wiremock-standalone-2.11.0.jar --root-dir build/wiremock --no-request-journal"
+}
+
+bin/install
+killThemAll
+
 mkdir -p log
 
 bin/wiremock     2>&1 | tee log/wiremock.log     | sed 's/.*/[wiremock] &/' &
@@ -10,4 +21,7 @@ cd elm
 elm-reactor      2>&1 | tee log/elm-reactor.log  | sed 's/.*/[elm-reactor] &/' &
 cd ..
 
+sleep 2
 read -p $'== Press enter to exit\n'
+
+killThemAll
