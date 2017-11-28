@@ -17,7 +17,7 @@ ROLE_ADMINISTRATOR=`env ID=1 CODE=ADMINISTRATOR NAME="Администратор
 
 env \
     envsubst < $FROM/noauth.json > $TO/noauth.json
-env GUID=GUID-001-004-004~GR1 ACCOUNT=admin TAB_NUMBER=1 ROLES="$ROLE_ADMINISTRATOR" \
+env GUID=5d5ed668-d56a-421c-b616-8abdaf5c8c4e ACCOUNT=admin TAB_NUMBER=1 ROLES="$ROLE_ADMINISTRATOR" \
     envsubst < $FROM/success.json > $TO/admin.json
 env ACCOUNT=blocked \
     envsubst < $FROM/blocked.json > $TO/blocked.json

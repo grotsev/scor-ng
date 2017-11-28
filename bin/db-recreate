@@ -72,4 +72,16 @@ create extension "pgjwt";
 create extension "pgtap";
 alter database $DB_NAME set app.jwt_secret to '$JWT_SECRET';
 alter database $DB_NAME set app.acs.url to '$ACS_URL';
+
+create or replace function json2text(in from_json json)
+returns text
+language plpgsql
+as \$function\$
+begin
+    return to_json(array[from_json])->>0;
+end;
+\$function\$;
+
+create cast (json as text) with function json2text(json) as assignment;
+
 EOF

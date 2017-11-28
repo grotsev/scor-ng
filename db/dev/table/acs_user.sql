@@ -7,7 +7,7 @@ create table acs_user
 , patronymic    textfield
 , email         email
 , tab_number    textfield
-, isBlocked     boolean     not null
+, is_blocked    boolean     not null
 
 , current_rol   code        not null
 
