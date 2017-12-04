@@ -8,7 +8,7 @@ create or replace function channel_send
   security definer
 as $function$
 
-  insert into syslog(category, msg) values ('seance/'||seance, msg::text);
+  insert into syslog(category, tag, msg) values ('test', 'seance/'||seance, msg::text);
 
 $function$;
 

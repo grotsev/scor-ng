@@ -59,7 +59,7 @@ begin
     , 'auth result is inserted into acs_user'
     );
 
-  select msg::json from syslog where category='seance/5d5ed668-d56a-421c-b616-8abdaf5c8c4e'
+  select msg::json from syslog where tag='seance/5d5ed668-d56a-421c-b616-8abdaf5c8c4e'
   into result_json;
 
   return next is((result_json#>'{account_name}')::text, 'admin', 'Web socket response.admin is set');
@@ -72,7 +72,7 @@ begin
 
   set role to test_check;
 
-  select msg from syslog where category='seance/5d5ed668-d56a-421c-b616-8abdaf5c8c41'
+  select msg from syslog where tag='seance/5d5ed668-d56a-421c-b616-8abdaf5c8c41'
   into result_text;
 
   return next is(result_text, 'Blocked', 'Web socket Blocked response');
@@ -85,7 +85,7 @@ begin
 
   set role to test_check;
 
-  select msg from syslog where category='seance/5d5ed668-d56a-421c-b616-8abdaf5c8c42'
+  select msg from syslog where tag='seance/5d5ed668-d56a-421c-b616-8abdaf5c8c42'
   into result_text;
 
   return next is(result_text, 'NotFound', 'Web socket NotFound response');
