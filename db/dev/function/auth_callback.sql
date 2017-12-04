@@ -75,8 +75,7 @@ begin
         json_result = '"UndefinedError"';
     end case;
 
-    insert into syslog(msg) values (response::text);
-    perform pg_notify('seance/'||seance, json_result::text);
+    perform channel_send(seance, json_result);
 
 exception when others then
     get stacked diagnostics the_error = message_text;

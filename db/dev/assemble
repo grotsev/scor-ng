@@ -149,6 +149,7 @@
  function/current_actor
  function/channel
  function/channel_seance
+ function/channel_send
  function/http_get
  function/http_post
  function/auth_callback
