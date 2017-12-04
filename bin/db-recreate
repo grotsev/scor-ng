@@ -9,6 +9,7 @@ source build/etc/env.conf
 psql postgres://$DB_ADMIN:$DB_ADMIN_PASSWORD@$DB_HOST:$DB_PORT/postgres -q <<EOF
 drop database if exists $DB_NAME;
 
+drop role if exists test;
 drop role if exists scoring;
 drop role if exists http;
 drop role if exists authenticator;
@@ -61,6 +62,9 @@ comment on role authenticator is 'Intermediate to become anonymous or an user';
 comment on role anonymous     is 'No authentication is provided';
 comment on role admin         is 'Privileged user';
 comment on role routine       is 'Unprivileged user';
+
+create role test          with login password 'test123' noinherit in role authenticator, http;
+create role test_check    with role test;
 
 create database $DB_NAME owner scoring;
 EOF

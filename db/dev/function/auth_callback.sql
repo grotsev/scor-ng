@@ -14,39 +14,39 @@ begin
     case (response#>'{status}')::text
     when '200' then
 
-        if not exists ( select actor from acs_user where guid = (response#>'{body,body,guid}')::text::uuid ) then
+        if not exists ( select actor from acs_user where guid = (response#>'{body,body,user,guid}')::text::uuid ) then
             with rows as (
                 insert into actor (actor) values (uuid_generate_v1mc()) returning actor
             )
             insert into acs_user(actor, guid, account_name, surname, name, patronymic
                 , email, tab_number, is_blocked, current_rol)
             select actor
-                 , (response#>'{body,body,guid}')::text::uuid
-                 , response#>'{body,body,accountName}'
-                 , response#>'{body,body,surname}'
-                 , response#>'{body,body,name}'
-                 , response#>'{body,body,patronymic}'
-                 , response#>'{body,body,email}'
-                 , response#>'{body,body,tabNumber}'
-                 , (response#>'{body,body,isBlocked}')::text::boolean
+                 , (response#>'{body,body,user,guid}')::text::uuid
+                 , response#>'{body,body,user,accountName}'
+                 , response#>'{body,body,user,surname}'
+                 , response#>'{body,body,user,name}'
+                 , response#>'{body,body,user,patronymic}'
+                 , response#>'{body,body,user,email}'
+                 , response#>'{body,body,user,tabNumber}'
+                 , (response#>'{body,body,user,isBlocked}')::text::boolean
                  , 'anonymous'
             from rows;
         else
             update acs_user
-            set account_name = response#>'{body,body,accountName}'
-              , surname      = response#>'{body,body,surname}'
-              , name         = response#>'{body,body,name}'
-              , patronymic   = response#>'{body,body,patronymic}'
-              , email        = response#>'{body,body,email}'
-              , tab_number   = response#>'{body,body,tabNumber}'
-              , is_blocked   = (response#>'{body,body,isBlocked}')::text::boolean
-            where guid       = (response#>'{body,body,guid}')::text::uuid;
+            set account_name = response#>'{body,body,user,accountName}'
+              , surname      = response#>'{body,body,user,surname}'
+              , name         = response#>'{body,body,user,name}'
+              , patronymic   = response#>'{body,body,user,patronymic}'
+              , email        = response#>'{body,body,user,email}'
+              , tab_number   = response#>'{body,body,user,tabNumber}'
+              , is_blocked   = (response#>'{body,body,user,isBlocked}')::text::boolean
+            where guid       = (response#>'{body,body,user,guid}')::text::uuid;
         end if;
 
         with u as (
             select *
             from acs_user u
-            where guid = (response#>'{body,body,guid}')::text::uuid
+            where guid = (response#>'{body,body,user,guid}')::text::uuid
         )
         select json_build_object
             ( 'rol'           , u.current_rol

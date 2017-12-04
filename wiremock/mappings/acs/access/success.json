@@ -14,18 +14,20 @@
         },
         "jsonBody": {
             "body": {
-                "guid": "${GUID}",
-                "accountName": "${ACCOUNT}",
-                "surname": "${ACCOUNT}_surname",
-                "name": "${ACCOUNT}_name",
-                "patronymic": "${ACCOUNT}_patronymic",
-                "email": "${ACCOUNT}@example.com",
-                "tabNumber": ${TAB_NUMBER},
-                "isBlocked": false
-            },
-            "roles": [
-                ${ROLES}
-            ]
+                "user": {
+                    "guid": "${GUID}",
+                    "accountName": "${ACCOUNT}",
+                    "surname": "${ACCOUNT}_surname",
+                    "name": "${ACCOUNT}_name",
+                    "patronymic": "${ACCOUNT}_patronymic",
+                    "email": "${ACCOUNT}@example.com",
+                    "tabNumber": ${TAB_NUMBER},
+                    "isBlocked": false
+                },
+                "roles": [
+                    ${ROLES}
+                ]
+            }
         }
     }
 }

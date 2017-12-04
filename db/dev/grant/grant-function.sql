@@ -9,6 +9,11 @@ grant execute on function
   current_actor()
 , channel_seance(uuid)
 to authenticator, anonymous, routine, admin;
+
+grant execute on function
+  auth_callback(uuid, json)
+to http;
+
 /*
 grant execute on function
   -- system

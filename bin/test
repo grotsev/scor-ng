@@ -3,7 +3,7 @@
 mkdir -p build/etc
 cp -u -p etc/env.conf build/etc/env.conf
 source build/etc/env.conf
-DB_URI=postgres://authenticator:authenticator123@$DB_HOST:$DB_PORT/$DB_NAME
+DB_URI=postgres://test:test123@$DB_HOST:$DB_PORT/$DB_NAME
 
 if [[ "$2" == "prod" ]]; then
   SCHEMA=prod
