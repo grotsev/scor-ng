@@ -1,8 +1,9 @@
 #!/bin/bash
 
-bin/install
 bin/devserver-stop
 bin/devserver-start
 sleep 2
-read -p $'== Press enter to exit\n'
+cd selenide
+gradle
+cd ..
 bin/devserver-stop
