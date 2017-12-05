@@ -8,6 +8,7 @@ create or replace function channel_send
   security definer
 as $function$
 
+  select pg_notify('seance/'||seance, msg::text);
   insert into syslog(category, tag, msg) values ('test', 'seance/'||seance, msg::text);
 
 $function$;
