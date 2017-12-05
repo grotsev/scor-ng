@@ -10,5 +10,5 @@ bin/postgrest-ws 2>&1 | tee log/postgrest-ws.log | sed 's/.*/[postgrest-ws] &/' 
 sleep 0.2
 bin/http_port    2>&1 | tee log/http_port.log    | sed 's/.*/[http_port] &/' &
 cd elm
-elm-reactor      2>&1 | tee log/elm-reactor.log  | sed 's/.*/[elm-reactor] &/' &
+elm-reactor      2>&1 | tee ../log/elm-reactor.log  | sed 's/.*/[elm-reactor] &/' &
 cd ..
